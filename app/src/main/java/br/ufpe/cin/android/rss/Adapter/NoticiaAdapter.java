@@ -1,6 +1,8 @@
-package br.ufpe.cin.android.rss;
+package br.ufpe.cin.android.rss.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,8 @@ import com.prof.rssparser.Article;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import br.ufpe.cin.android.rss.R;
 
 public class NoticiaAdapter extends RecyclerView.Adapter<NoticiaAdapter.NoticiaHolder> {
     List<Article> noticias;
@@ -37,6 +41,7 @@ public class NoticiaAdapter extends RecyclerView.Adapter<NoticiaAdapter.NoticiaH
     @Override
     public void onBindViewHolder(@NonNull NoticiaHolder holder, int position) {
         Article noticia = noticias.get(position);
+        holder.currentLink = noticia.getLink();
         holder.title.setText(noticia.getTitle());
         holder.pubDate.setText(noticia.getPubDate());
 
@@ -58,6 +63,7 @@ public class NoticiaAdapter extends RecyclerView.Adapter<NoticiaAdapter.NoticiaH
         private TextView pubDate;
         private ImageView image;
         private FrameLayout frameLayout;
+        private String currentLink;
 
         public NoticiaHolder(View noticiaView) {
             super(noticiaView);
@@ -66,11 +72,14 @@ public class NoticiaAdapter extends RecyclerView.Adapter<NoticiaAdapter.NoticiaH
             image = noticiaView.findViewById(R.id.imagem);
             frameLayout = noticiaView.findViewById(R.id.frameImg);
             noticiaView.setOnClickListener(this);
+            currentLink = "";
         }
 
         @Override
         public void onClick(View view) {
-            //TODO
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentLink));
+            browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(browserIntent);
         }
     }
 }

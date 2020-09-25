@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="@+id/pref_screen">
+
+    <EditTextPreference
+        android:key="@string/link_prefs_name"
+        android:title="Link de Preferência"
+        android:summary="Current Link"
+        android:dialogTitle="Qual seu link para servir como fonte de notícias?"
+        />
+
+</PreferenceScreen>

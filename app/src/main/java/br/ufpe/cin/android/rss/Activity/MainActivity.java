@@ -1,9 +1,14 @@
 package br.ufpe.cin.android.rss.Activity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,16 +25,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-import br.ufpe.cin.android.rss.NoticiaAdapter;
+import br.ufpe.cin.android.rss.Adapter.NoticiaAdapter;
 import br.ufpe.cin.android.rss.R;
 
 public class MainActivity extends AppCompatActivity {
-    private final String RSS_FEED = "https://g1.globo.com/dynamo/rss2.xml";
-
-    //ListView conteudoRSS;
-    List<Article> noticias;
-
-    RecyclerView recyclerView;
+    private String link_preference;
+    private List<Article> noticias;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,34 +44,55 @@ public class MainActivity extends AppCompatActivity {
         DividerItemDecoration did = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(did);
 
-        //conteudoRSS = findViewById(R.id.conteudoRSS);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        link_preference = prefs.getString( getString(R.string.link_prefs_name), getString(R.string.feed_padrao));
+        Log.i("INFO", link_preference);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        updateNews();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        link_preference = prefs.getString( getString(R.string.link_prefs_name), getString(R.string.feed_padrao));
+
+        updateNews();
+    }
+
+    private void updateNews() {
         Parser p = new Parser.Builder().build();
         p.onFinish(
-            new OnTaskCompleted() {
-                @Override
-                public void onTaskCompleted(Channel channel) {
-                    noticias = channel.getArticles();
-                    runOnUiThread(
-                        () -> {
-                            NoticiaAdapter adapter = new NoticiaAdapter(getApplicationContext(), noticias);
-                            recyclerView.setAdapter(adapter);
-                        }
-                    );
-                }
+                new OnTaskCompleted() {
+                    @Override
+                    public void onTaskCompleted(Channel channel) {
+                        noticias = channel.getArticles();
+                        runOnUiThread(
+                                () -> {
+                                    NoticiaAdapter adapter = new NoticiaAdapter(getApplicationContext(), noticias);
+                                    recyclerView.setAdapter(adapter);
+                                }
+                        );
+                    }
 
-                @Override
-                public void onError(Exception e) {
-                    Log.e("RSS_APP",e.getMessage());
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e("RSS_APP",e.getMessage());
+                    }
                 }
-            }
         );
-        p.execute(RSS_FEED);
+        p.execute(link_preference);
         /*
         new Thread(
                 () -> {
@@ -108,5 +131,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return rssFeed;
+    }
+
+    public void onclick(MenuItem item) {
+        if (item.getItemId() == R.id.action_preferences) {
+            Intent intent = new Intent(this, PreferenciasActivity.class);
+            startActivity(intent);
+        }
     }
 }
