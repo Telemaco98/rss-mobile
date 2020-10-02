@@ -1,12 +1,12 @@
-package DAO;
+package br.ufpe.cin.android.rss.Dao;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.TypeConverters;
 
 import java.util.List;
-
 import br.ufpe.cin.android.rss.Entity.Canal;
 
 @Dao
