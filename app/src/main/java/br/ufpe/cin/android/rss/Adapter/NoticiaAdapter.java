@@ -19,13 +19,22 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import br.ufpe.cin.android.rss.Entity.Noticia;
 import br.ufpe.cin.android.rss.R;
 
+/**
+ * The class Noticia adapter serves to organize a list of items in the screen through RecyclerView.
+ */
 public class NoticiaAdapter extends RecyclerView.Adapter<NoticiaAdapter.NoticiaHolder> {
-    List<Article> noticias;
-    Context context;
+    List<Noticia> noticias; /** A list of news **/
+    Context context; /** The context **/
 
-    public NoticiaAdapter (Context context, List<Article> noticias) {
+    /**
+     * Parametric constructor of NoticiaAdapter class
+     * @param context
+     * @param noticias
+     */
+    public NoticiaAdapter (Context context, List<Noticia> noticias) {
         this.context = context;
         this.noticias = noticias;
     }
@@ -40,16 +49,16 @@ public class NoticiaAdapter extends RecyclerView.Adapter<NoticiaAdapter.NoticiaH
 
     @Override
     public void onBindViewHolder(@NonNull NoticiaHolder holder, int position) {
-        Article noticia = noticias.get(position);
+        Noticia noticia = noticias.get(position);
         holder.currentLink = noticia.getLink();
-        holder.title.setText(noticia.getTitle());
-        holder.pubDate.setText(noticia.getPubDate());
+        holder.title.setText(noticia.getTitulo());
+        holder.pubDate.setText(noticia.getData());
 
-        if (noticia.getImage() == null || noticia.getImage().trim().equals("")) {
+        if (noticia.getImg() == null || noticia.getImg().trim().equals("")) {
             holder.image.setLayoutParams(new FrameLayout.LayoutParams(0, 0));
             holder.frameLayout.setLayoutParams(new LinearLayout.LayoutParams(0, 0, (float) 0.0));
         } else {
-            Picasso.get().load(noticia.getImage()).into(holder.image);
+            Picasso.get().load(noticia.getImg()).into(holder.image);
         }
     }
 
@@ -58,6 +67,9 @@ public class NoticiaAdapter extends RecyclerView.Adapter<NoticiaAdapter.NoticiaH
         return noticias.size();
     }
 
+    /**
+     * NoticiaHolder class determines and displays the components of a list item
+     */
     public class NoticiaHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView title;
         private TextView pubDate;

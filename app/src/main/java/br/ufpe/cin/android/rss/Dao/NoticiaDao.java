@@ -15,9 +15,6 @@ public interface NoticiaDao {
     @Query("SELECT * FROM noticias")
     List<Noticia> getAll();
 
-    @Insert
-    void insertAll(Noticia... noticias);
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Noticia> noticias);
 

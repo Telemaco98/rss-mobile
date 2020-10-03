@@ -10,6 +10,9 @@ import androidx.room.TypeConverters;
 import br.ufpe.cin.android.rss.Dao.NoticiaDao;
 import br.ufpe.cin.android.rss.Entity.Noticia;
 
+/**
+ * The class that serves as database instance.
+ */
 @Database(entities = {Noticia.class}, version = 1, exportSchema = false)
 @TypeConverters({Noticia.DataConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
